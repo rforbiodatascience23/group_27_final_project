@@ -1,5 +1,5 @@
 ---
-title: "00_doit: Running analysis"
+title: "00_all: Running analysis"
 format:
   html:
     embed-resources: true
@@ -11,7 +11,6 @@ editor: visual
 When this file is executed the whole data analysis will be run. Resulting in the creating of plots, html files and final presentation document
 
 ```{r}
-
 rmarkdown::render("01_load.qmd", output_dir = "../results/")
 
 rmarkdown::render("02_clean.qmd", output_dir = "../results/")
