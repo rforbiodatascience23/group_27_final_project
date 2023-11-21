@@ -1,0 +1,92 @@
+---
+title: "02_clean"
+format: html
+editor: visual
+---
+
+# Load data
+
+```{r}
+clinical_data <- read_tsv(
+  file = "../data/clinical_data.tsv")
+
+gene_expression <- read_tsv(
+  file = "../data/gene_expression.tsv")
+
+mutations <- read_tsv(
+  file = "../data/mutations.tsv")
+```
+
+# Missing data
+
+```{r}
+clinical_data |> 
+  sample_n(10)
+```
+
+```{r}
+missing_data <-
+  clinical_data |> 
+  summarise_all(~ sum(is.na(.))/nrow(clinical_data) * 100) |>
+  pivot_longer(cols = everything(),
+               names_to = "Variable",
+               values_to = "Percentagemissing") |> 
+    ggplot(mapping = aes(x = Variable,
+                     y = Percentagemissing)) +
+  geom_bar(stat = "Identity") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), 
+        plot.title = element_text(hjust = 0.5)) + 
+  ylab('Missing Values(%)') + 
+  ggtitle('Missing Values in Percentage')
+missing_data
+```
+
+# Rename and remove columns
+
+Organizing data structure and removing variables which are not going to be used for further analysis. Moreover, renaming longer variable names with special characters for convenience.
+
+```{r}
+clinical_data_clean <- 
+  clinical_data |> 
+  select(age_at_diagnosis, 
+         cancer_type_detailed,
+         type_of_breast_surgery,
+         chemotherapy,
+         radio_therapy, 
+         hormone_therapy, 
+         cellularity,
+         `pam50_+_claudin-low_subtype`,
+         `3-gene_classifier_subtype`,
+         her2_status,
+         er_status, 
+         pr_status,
+         lymph_nodes_examined_positive,
+         neoplasm_histologic_grade,
+         mutation_count, 
+         tumor_size,
+         overall_survival_months,
+         overall_survival,
+         death_from_cancer
+        ) |> 
+  rename(P50CL_Subtype = `pam50_+_claudin-low_subtype`,
+         TGC_Subtype = `3-gene_classifier_subtype`)
+
+clinical_data_clean
+```
+
+# Writing plots
+
+```{r}
+ggsave("02_missing_data.png", 
+       path = "../doc/images/",
+       plot = missing_data,
+       width = 8,
+       height = 5)
+```
+
+# Writing clean data
+
+```{r}
+write_tsv(x = clinical_data_clean, 
+          file = "../data/clinical_data_clean.tsv")
+```

@@ -1,0 +1,61 @@
+---
+title: "01_load"
+format: html
+editor: visual
+---
+
+# Load libraries
+
+Libraries used for the project.
+
+```{r}
+library(tidyverse)
+library(broom)
+library(patchwork)
+library(table1)
+```
+
+# Load data
+
+To access the data go to [DATA](https://www.kaggle.com/datasets/raghadalharbi/breast-cancer-gene-expression-profiles-metabric/data), download and upload to the ../data/\_raw/ folder.
+
+```{r}
+data <- read_csv(file = "../data/_raw/METABRIC.csv")
+head(data)
+```
+
+# Split data
+
+The data will be split into clinical data, gene expression and gene mutation expression.
+
+```{r}
+clinical_data <- 
+  data |>
+  select(1:31) |>
+  column_to_rownames(var = "patient_id")
+  
+gene_expression <- 
+  data |>
+  select(1, 
+         32:520) |>
+  column_to_rownames(var = "patient_id")
+  
+mutations <-
+  data |>
+  select(1, 
+         ends_with("_mut")) |>
+  column_to_rownames(var = "patient_id")
+```
+
+# Write data
+
+Writing each data frame into a separate tsv file
+
+```{r}
+write_tsv(x = clinical_data, 
+          file = "../data/clinical_data.tsv")
+write_tsv(x = gene_expression, 
+          file = "../data/gene_expression.tsv")
+write_tsv(x = mutations, 
+          file = "../data/mutations.tsv")
+```

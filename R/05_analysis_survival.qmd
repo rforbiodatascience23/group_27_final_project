@@ -1,0 +1,446 @@
+---
+title: "05_analysis_survival"
+format: html
+editor: visual
+---
+
+# Load data
+
+```{r}
+clinical_data <- read_tsv(
+  file = "../data/clinical_data_clean.tsv")
+```
+
+```{r}
+
+clinical_data <- na.omit(clinical_data)
+```
+
+# Survival analysis
+
+With a survival analysis of the breast cancer dataset, we will visualize survival curves to understand the overall survival probability over time for breast cancer patients. Evaluate the importance of key variables such as age, tumor size, mutation number and treatment options on overall survival. Furthermore, we will identify factors that significantly influence survival outcomes for breast cancer patients and compare survival curves between patient subgroups based on specific characteristics, such as ER status and treatment type.
+
+## Survival Rate
+
+By calculating the mean value of the patient survival, the value for 'survival_rate' will represent the average survival rate.
+
+```{r}
+
+survival_rate <- data |>
+  summarize(
+    survival_mean = mean(overall_survival)
+  )
+
+print(survival_rate)
+
+```
+
+A survival rate of 0.44 means that, on average 44% of the individuals in the data set have survived the breast cancer.
+
+## Age Distribution
+
+Converting the variable 'overall_survival' to a factor is done to represent it as a categorical variable, and to avoid misinterpretation of the numerical values given in the variable.
+
+To explore the distribution of ages at diagnosis for patients who survived and those who did not, we identified whether certain age at diagnosis are associated with survived and died patients:
+
+```{r}
+
+age_boxplot <- ggplot(data = clinical_data,
+    mapping = aes(x = overall_survival, y = age_at_diagnosis, fill = factor(overall_survival))) +
+  geom_boxplot(alpha = 0.5, 
+               show.legend = FALSE) +
+  labs(title = "The distribution of Patient Survival by Ages at Diagnosis",
+       x = "Patient Survival", 
+       y = "Age at Diagnosis", subtitle = str_c("Labelling: Died = 0, ", "Survived = 1")) +
+  scale_fill_manual(values = c("0" = "red", "1" = "green"), 
+                    labels = c("Died", "Survived")) +
+  theme_classic(base_size = 12,
+                base_family = "Avenir")
+
+print(age_boxplot)
+```
+
+We create a new variable 'age_group' based on the variable 'age_at_diagnosis', for categorizing patients into different age groups.
+
+```{r}
+
+clinical_data <- clinical_data |>
+  mutate(age_group = cut(age_at_diagnosis, breaks = c(0, 40, 60, 80, Inf), labels = c("0-40", "41-60", "61-80", "81+")))
+```
+
+To observe whether certain age groups have higher proportion of survival, we visualize the distribution of age groups based on the patient survival status:
+
+```{r}
+
+age_bar <- clinical_data |>
+  ggplot(mapping = aes(x = age_group, fill = factor(overall_survival))) +
+  geom_bar(alpha = 0.5) +
+  labs(title = "Distribution of Age Groups in terms of Patient Survival",
+       x = "Age Groups",
+       y = "Number of patients",
+       fill = "Patient Survival") +
+  scale_fill_manual(values = c("0" = "red", "1" = "green"), 
+                    labels = c("Died", "Survived")) +
+  theme_classic(base_size = 12,
+                base_family = "Avenir")
+print(age_bar)
+```
+
+Each bar represents an age group, and the bars are colored according to survival status. The height of each bar indicated the number of patients in each age group.
+
+The box plots below illustrate a distribution of tumor diameter (mm) and survival of the patients across different age groups. Each box represents a specific age group, and the vertical axis shows the tumor diameter. The bars are colored according to survival status.
+
+```{r}
+
+age_tumor_survival_boxplot <- ggplot(data = clinical_data, 
+                                     mapping = aes(x = age_group, 
+                                                   y = tumor_size, 
+                                                   fill = factor(overall_survival))) +
+  geom_boxplot(alpha = 0.5, show.legend = TRUE) +
+  labs(title = "The Distribution of Tumor Size and Overall Survival by Age Groups",
+       x = "Age Group (years)",
+       y = "Tumor Diameter (mm)",
+       fill = "Patient Survival") +
+  scale_fill_manual(values = c("0" = "red", "1" = "green"),
+                    labels = c("Died", "Survived")) +
+  theme_classic(base_size = 12,
+                base_family = "Avenir")
+
+
+print(age_tumor_survival_boxplot)
+```
+
+The variability of tumor sizes within each age group differs less for each age groups. by looking at the points outside the whiskers, many more outliers are represent for the age group 41-60 and 61-80, which means more unusal tumor sizes are represent within the age groups compared to the age groups 0-40 and 81+. Furthermore, it is clear to observe from the whiskers for each age group that died patients had a larger tumor size compared to tumor sizes for survived patients.
+
+## Logarithmic Transformed Tumor Sizes and Mutation Counts with Normal Distribution
+
+The plot we are creating is a combination of a histogram and a normal distribution curve overlaid on top of it.
+
+```{r}
+
+mean_sd_summary <- clinical_data |>
+  summarize(
+    mean_tumor_size = mean(tumor_size),
+    sd_tumor_size = sd(tumor_size)
+  )
+
+tumor_histogram <- ggplot(clinical_data, aes(x = tumor_size, y = ..density..)) +
+  geom_histogram(fill = "blue", color = "white", alpha = 0.7) +
+  labs(title = "Distribution of Tumor Sizes with Normal Distribution Curve",
+       x = "Tumor Size",
+       y = "Density") +
+  theme_classic(base_size = 12,
+                base_family = "Avenir")
+
+tumor_curve <- clinical_data |>
+  summarize(
+    x = seq(min(tumor_size), 
+            max(tumor_size), 
+            length.out = 1090),
+    mean_tumor_size = mean(tumor_size),
+    sd_tumor_size = sd(tumor_size)) |>
+  mutate(y = dnorm(x, 
+                   mean = mean_tumor_size, 
+                   sd = sd_tumor_size))
+
+tumor_plot1 <- tumor_histogram + geom_line(
+  data = tumor_curve, 
+  aes(x = x, y = y), color = "red")
+
+
+print(tumor_plot1)
+
+```
+
+The histogram shows the distribution of tumor sizes in the data set. The mean and standard deviation estimated provide information about the average tendency and variability of the tumor sizes.
+
+With the variable 'mutation_count' a combination of a histrogram and a normal distribution curve is created.
+
+```{r}
+
+
+mean_sd_summary <- clinical_data |>
+  summarize(
+    mean_mutation_count = mean(mutation_count),
+    sd_mutation_count = sd(mutation_count)
+  )
+
+mutation_histogram <- ggplot(clinical_data, aes(x = mutation_count, y = ..density..)) +
+  geom_histogram(fill = "blue", color = "white", alpha = 0.7) +
+  labs(title = "Distribution of Mutation Counts with Fitted Normal Distribution Curve",
+       x = "Mutation Counts",
+       y = "Density") +
+  theme_classic(base_size = 9,
+                base_family = "Avenir")
+
+mutation_curve <- clinical_data |>
+  summarize(
+    x = seq(min(mutation_count), 
+            max(mutation_count), 
+            length.out = 1090),
+    mean_mutation_count = mean(mutation_count),
+    sd_mutation_count = sd(mutation_count)) |>
+  mutate(y = dnorm(x, 
+                   mean = mean_mutation_count, 
+                   sd = sd_mutation_count))
+
+mutation_plot1 <- mutation_histogram + geom_line(
+  data = mutation_curve, 
+  aes(x = x, y = y), color = "red")
+
+print(mutation_plot1)
+```
+
+The curve represents the normal distribution based on the mean and standard deviation. The histograms for both variables does not fit into the normal distribution curves. An asymmetric distribution of variables is observed when a thicker tail of the histogram is seen, and therefore the normal distribution curve deviated from the histogram
+
+By making a logarithmic transformation of both variables: 'tumor_size' and 'mutation_count' with normal distributed curves, we will achieve symmetrical distributed variables.
+
+```{r}
+
+clinical_data <- clinical_data |>   
+  mutate(     
+    tumor_size_log = log10(tumor_size),     
+    mutation_count_log = log10(mutation_count)   
+    )
+```
+
+```{r}
+
+mean_sd_summary_log <- clinical_data |>
+  summarize(
+    mean_tumor_size_log = mean(tumor_size_log),
+    sd_tumor_size_log = sd(tumor_size_log)
+  )
+
+tumor_histogram_log <- ggplot(clinical_data, aes(x = tumor_size_log, y = ..density..)) +
+  geom_histogram(fill = "blue", color = "white", alpha = 0.9) +
+  labs(title = "Distribution of Log-Transformed Tumor Sizes with Fitted Normal Distribution Curve",
+       x = "Log10 Transformed Tumor Sizes",
+       y = "Density") +
+  theme_classic(base_size = 9,
+                base_family = "Avenir")
+
+tumor_curve_log <- clinical_data |>
+  summarize(
+    x = seq(min(tumor_size_log), 
+            max(tumor_size_log), 
+            length.out = 1090),
+    mean_tumor_size_log = mean(tumor_size_log),
+    sd_tumor_size_log = sd(tumor_size_log)) |>
+  mutate(y = dnorm(x, 
+                   mean = mean_tumor_size_log, 
+                   sd = sd_tumor_size_log))
+
+tumor_plot2 <- tumor_histogram_log + geom_line(
+  data = tumor_curve_log, 
+  aes(x = x, y = y), color = "red")
+
+
+print(tumor_plot2)
+```
+
+```{r}
+
+mean_sd_summary_log <- clinical_data |>
+  summarize(
+    mean_mutation_count_log = mean(mutation_count_log),
+    sd_mutation_count_log = sd(mutation_count_log)
+  )
+
+mutation_histogram_log <- ggplot(clinical_data, aes(x = mutation_count_log, y = ..density..)) +
+  geom_histogram(fill = "blue", color = "white", alpha = 0.9) +
+  labs(title = "Distribution of Log-Transformed Mutation Counts with Fitted Normal Distribution Curve",
+       x = "Log10 Transformed Mutation Counts",
+       y = "Density") +
+  theme_classic(base_size = 9,
+                base_family = "Avenir")
+
+mutation_curve_log <- clinical_data |>
+  summarize(
+    x = seq(min(mutation_count_log), 
+            max(mutation_count_log), 
+            length.out = 1090),
+    mean_mutation_count_log = mean(mutation_count_log),
+    sd_mutation_count_log = sd(mutation_count_log)) |>
+  mutate(y = dnorm(x, 
+                   mean = mean_mutation_count_log, 
+                   sd = sd_mutation_count_log))
+
+mutation_plot2 <- mutation_histogram_log + geom_line(
+  data = mutation_curve_log, 
+  aes(x = x, y = y), color = "red")
+
+print(mutation_plot2)
+```
+
+## The Impact of Tumor Characteristics on Patient Survival
+
+To understand how specific attributes of tumors influence the survival outcomes of patients, we made some relevant plot to create visualizations to effectively communicate the results.
+
+We have created box plots of positive lymph nodes based on logarithmic transformed tumor sizes.
+
+```{r}
+
+lymph_boxplot <- ggplot(data = clinical_data, aes(y = as.factor(lymph_nodes_examined_positive), x = tumor_size_log, color = lymph_nodes_examined_positive)) +   
+  geom_boxplot(alpha = 0.5, 
+               show.legend = FALSE) +
+  labs(title = "The Distribution of Positive Lymph Nodes according to log-transformed Tumor Sizes",
+       x = "Log10 Transformed Tumor Size", 
+       y = "Positive Lymph Nodes") +
+  theme_classic(base_size = 9,
+                base_family = "Avenir")
+
+print(lymph_boxplot)
+```
+
+The box plot shows the average tendency of log10 transofrmed tumor sizes for different levels of positive lymph nodes. The interquartile range of each box indicated the variability of log-transformed tumor sizes within each level. so the larger boxes shows greater variability.
+
+## Clinical Treatment traits
+
+In order to visualize the distribution of the patient survival status based on different treatment traits, such as: chemotherapy, hormone therapy and radio therapy, three bar chart plots are created below.
+
+```{r}
+
+chemotherapy_chart <- clinical_data |>
+  ggplot(aes(x = factor(chemotherapy), fill = factor(overall_survival))) +
+  geom_bar(alpha = 0.5) +
+  labs(title = "The Survival of Breast Cancer Patients Treated with Different Clinical Treatments",
+       x = "Chemotherapy",
+       y = "Number of Patients",
+       fill = "Survival") +
+  scale_fill_manual(values = c("0" = "red", "1" = "green"), 
+                    labels = c("Died", "Survived")) +  
+  scale_x_discrete(labels = c("0" = "No", "1" = "Yes")) +
+  theme_classic(base_size = 9,
+                base_family = "Avenir")
+
+
+hormone_chart <- clinical_data |>
+  ggplot(aes(x = factor(hormone_therapy), fill = factor(overall_survival))) +
+  geom_bar(alpha = 0.5) +
+  labs(
+       x = "Hormone Therapy",
+       y = "Number of Patients",
+       fill = "Survival") +
+  scale_fill_manual(values = c("0" = "red", "1" = "green"), 
+                    labels = c("Died", "Survived")) +  
+  scale_x_discrete(labels = c("0" = "No", "1" = "Yes")) +
+  theme_classic(base_size = 10,
+                base_family = "Avenir")
+
+
+
+radio_chart <- clinical_data |>
+  ggplot(aes(x = factor(radio_therapy), fill = factor(overall_survival))) +
+  geom_bar(alpha = 0.5) +
+  labs(
+       x = "Radio Therapy",
+       y = "Number of Patients",
+       fill = "Survival") +
+  scale_fill_manual(values = c("0" = "red", "1" = "green"), 
+                    labels = c("Died", "Survived")) +  
+  scale_x_discrete(labels = c("0" = "No", "1" = "Yes")) +
+  theme_classic(base_size = 10,
+                base_family = "Avenir")
+
+plot_surv_treatment <- chemotherapy_chart/(hormone_chart + radio_chart)
+plot_surv_treatment
+```
+
+The height of each bar represents the number of patients, and the color indicates their survival status
+
+## Survival efficacy related to different types of surgery
+
+```{r}
+p1 <- 
+  clinical_data |> 
+  filter(type_of_breast_surgery == 'MASTECTOMY') |>  
+  filter( death_from_cancer!='Died of Other Causes')|> 
+  ggplot(aes(x = death_from_cancer, fill = death_from_cancer)) + 
+  geom_bar() + 
+  theme_minimal() + 
+  scale_fill_manual(values = c("Died of Disease" = "red", "Living" = "green"), 
+                    labels = c("Died", "Survived")) +
+  labs (x ='masectomy', y='number of individuals')+ 
+  theme(axis.title.x = element_text(size = 12, face = "bold"), 
+        axis.title.y = element_text(size = 12, face = "bold"), 
+        axis.text.x = element_text(size = 10), 
+        axis.text.y = element_text(size = 10)) + 
+  theme(legend.position = "none") 
+
+  
+p2 <- 
+  clinical_data |> 
+  filter(type_of_breast_surgery == 'BREAST CONSERVING') |>  
+  filter(death_from_cancer!= 'NA' & death_from_cancer!='Died of Other Causes') |> 
+  ggplot(aes(x = death_from_cancer, fill = death_from_cancer)) + 
+  geom_bar() + 
+  theme_minimal() + 
+  scale_fill_manual(values = c("Died of Disease" = "red", "Living" = "green"), 
+                    labels = c("Died of Disease", "Survived")) +
+  labs (x ='breast conserving', y='number of individuals') + 
+  theme(axis.title.x = element_text(size = 12, face = "bold"), 
+        axis.title.y = element_text(size = 12, face = "bold"), 
+        axis.text.x = element_text(size = 10), 
+        axis.text.y = element_blank()) + 
+  labs(y=NULL)+ 
+  guides(fill = guide_legend(title = NULL)) 
+
+
+plot_surv_surg <- p1 +  labs(title = "Survival Efficacy Related to Different Types of Surgery") + p2 
+
+plot_surv_surg
+```
+
+# Write images
+
+```{r}
+ggsave("06_age_boxplot.png", 
+       path = "../doc/images/",
+       plot = age_boxplot,
+       width = 8,
+       height = 5)
+
+ggsave("06_age_bar.png", 
+       path = "../doc/images/",
+       plot = age_bar,
+       width = 8,
+       height = 5)
+
+ggsave("06_age_tumor_survival_boxplot.png", 
+       path = "../doc/images/",
+       plot = age_tumor_survival_boxplot,
+       width = 8,
+       height = 5)
+
+ggsave("06_tumor_plot1.png", 
+       path = "../doc/images/",
+       plot = tumor_plot1,
+       width = 8,
+       height = 5)
+
+ggsave("06_tumor_plot2.png", 
+       path = "../doc/images/",
+       plot = tumor_plot2,
+       width = 8,
+       height = 5)
+
+ggsave("06_surv_treatment.png", 
+       path = "../doc/images/",
+       plot = plot_surv_treatment,
+       width = 8,
+       height = 5)
+
+ggsave("06_surv_treatment.png", 
+       path = "../doc/images/",
+       plot = lymph_boxplot,
+       width = 8,
+       height = 5)
+
+ggsave("06_surv_surg.png", 
+       path = "../doc/images/",
+       plot = plot_surv_surg,
+       width = 8,
+       height = 5)
+
+```

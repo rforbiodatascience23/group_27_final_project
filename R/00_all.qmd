@@ -1,0 +1,29 @@
+---
+title: "00_doit: Running analysis"
+format: html
+editor: visual
+---
+
+# Run all qmd files
+
+When this file is executed the whole data analysis will be run. Resulting in the creating of plots, html files and final presentation document
+
+```{r}
+
+rmarkdown::render("01_load.qmd", output_dir = "../results/")
+
+rmarkdown::render("02_clean.qmd", output_dir = "../results/")
+
+rmarkdown::render("03_describe.qmd", output_dir = "../results/")
+
+rmarkdown::render("04_augment.qmd", output_dir = "../results/")
+
+rmarkdown::render("05_analysis_survival.qmd", output_dir = "../results/")
+
+rmarkdown::render("06_analysis_gene_expression.qmd", output_dir = "../results/")
+
+rmarkdown::render("07_analysis_mutation.qmd", output_dir = "../results/")
+
+#rmarkdown::render("../doc/final_presentation.qmd", 
+#                  output_dir = "../doc/")
+```
