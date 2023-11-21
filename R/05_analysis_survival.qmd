@@ -26,8 +26,8 @@ By calculating the mean value of the patient survival, the value for 'survival_r
 
 ```{r}
 
-survival_rate <- data |>
-  summarize(
+survival_rate <- clinical_data |>
+  summarise(
     survival_mean = mean(overall_survival)
   )
 
@@ -35,7 +35,7 @@ print(survival_rate)
 
 ```
 
-A survival rate of 0.44 means that, on average 44% of the individuals in the data set have survived the breast cancer.
+A survival rate of 0.43 means that, on average 44% of the individuals in the data set have survived the breast cancer.
 
 ## Age Distribution
 
@@ -44,14 +44,18 @@ Converting the variable 'overall_survival' to a factor is done to represent it a
 To explore the distribution of ages at diagnosis for patients who survived and those who did not, we identified whether certain age at diagnosis are associated with survived and died patients:
 
 ```{r}
-
-age_boxplot <- ggplot(data = clinical_data,
-    mapping = aes(x = overall_survival, y = age_at_diagnosis, fill = factor(overall_survival))) +
+age_boxplot <- 
+  ggplot(data = clinical_data,
+         mapping = aes(x = overall_survival, 
+                       y = age_at_diagnosis, 
+                       fill = factor(overall_survival))) +
   geom_boxplot(alpha = 0.5, 
                show.legend = FALSE) +
   labs(title = "The distribution of Patient Survival by Ages at Diagnosis",
        x = "Patient Survival", 
-       y = "Age at Diagnosis", subtitle = str_c("Labelling: Died = 0, ", "Survived = 1")) +
+       y = "Age at Diagnosis", 
+       subtitle = str_c("Labelling: Died = 0, ",
+                        "Survived = 1")) +
   scale_fill_manual(values = c("0" = "red", "1" = "green"), 
                     labels = c("Died", "Survived")) +
   theme_classic(base_size = 12,
@@ -64,8 +68,11 @@ We create a new variable 'age_group' based on the variable 'age_at_diagnosis', f
 
 ```{r}
 
-clinical_data <- clinical_data |>
-  mutate(age_group = cut(age_at_diagnosis, breaks = c(0, 40, 60, 80, Inf), labels = c("0-40", "41-60", "61-80", "81+")))
+clinical_data <- 
+  clinical_data |>
+  mutate(age_group = cut(age_at_diagnosis,
+                         breaks = c(0, 40, 60, 80, Inf),
+                         labels = c("0-40", "41-60", "61-80", "81+")))
 ```
 
 To observe whether certain age groups have higher proportion of survival, we visualize the distribution of age groups based on the patient survival status:
@@ -92,11 +99,13 @@ The box plots below illustrate a distribution of tumor diameter (mm) and surviva
 
 ```{r}
 
-age_tumor_survival_boxplot <- ggplot(data = clinical_data, 
-                                     mapping = aes(x = age_group, 
-                                                   y = tumor_size, 
-                                                   fill = factor(overall_survival))) +
-  geom_boxplot(alpha = 0.5, show.legend = TRUE) +
+age_tumor_survival_boxplot <- 
+  ggplot(data = clinical_data, 
+         mapping = aes(x = age_group, 
+                       y = tumor_size, 
+                       fill = factor(overall_survival))) +
+  geom_boxplot(alpha = 0.5, 
+               show.legend = TRUE) +
   labs(title = "The Distribution of Tumor Size and Overall Survival by Age Groups",
        x = "Age Group (years)",
        y = "Tumor Diameter (mm)",
@@ -118,14 +127,19 @@ The plot we are creating is a combination of a histogram and a normal distributi
 
 ```{r}
 
-mean_sd_summary <- clinical_data |>
+mean_sd_summary <- 
+  clinical_data |>
   summarize(
     mean_tumor_size = mean(tumor_size),
     sd_tumor_size = sd(tumor_size)
   )
 
-tumor_histogram <- ggplot(clinical_data, aes(x = tumor_size, y = ..density..)) +
-  geom_histogram(fill = "blue", color = "white", alpha = 0.7) +
+tumor_histogram <- ggplot(clinical_data, 
+                          aes(x = tumor_size, 
+                              y = ..density..)) +
+  geom_histogram(fill = "blue", 
+                 color = "white", 
+                 alpha = 0.7) +
   labs(title = "Distribution of Tumor Sizes with Normal Distribution Curve",
        x = "Tumor Size",
        y = "Density") +
@@ -165,8 +179,12 @@ mean_sd_summary <- clinical_data |>
     sd_mutation_count = sd(mutation_count)
   )
 
-mutation_histogram <- ggplot(clinical_data, aes(x = mutation_count, y = ..density..)) +
-  geom_histogram(fill = "blue", color = "white", alpha = 0.7) +
+mutation_histogram <- ggplot(clinical_data, 
+                             aes(x = mutation_count, 
+                                 y = ..density..)) +
+  geom_histogram(fill = "blue", 
+                 color = "white", 
+                 alpha = 0.7) +
   labs(title = "Distribution of Mutation Counts with Fitted Normal Distribution Curve",
        x = "Mutation Counts",
        y = "Density") +
@@ -184,9 +202,12 @@ mutation_curve <- clinical_data |>
                    mean = mean_mutation_count, 
                    sd = sd_mutation_count))
 
-mutation_plot1 <- mutation_histogram + geom_line(
-  data = mutation_curve, 
-  aes(x = x, y = y), color = "red")
+mutation_plot1 <- 
+  mutation_histogram + 
+  geom_line(data = mutation_curve, 
+            aes(x = x,
+                y = y), 
+            color = "red")
 
 print(mutation_plot1)
 ```
@@ -212,8 +233,12 @@ mean_sd_summary_log <- clinical_data |>
     sd_tumor_size_log = sd(tumor_size_log)
   )
 
-tumor_histogram_log <- ggplot(clinical_data, aes(x = tumor_size_log, y = ..density..)) +
-  geom_histogram(fill = "blue", color = "white", alpha = 0.9) +
+tumor_histogram_log <- ggplot(clinical_data, 
+                              aes(x = tumor_size_log, 
+                                  y = ..density..)) +
+  geom_histogram(fill = "blue", 
+                 color = "white", 
+                 alpha = 0.9) +
   labs(title = "Distribution of Log-Transformed Tumor Sizes with Fitted Normal Distribution Curve",
        x = "Log10 Transformed Tumor Sizes",
        y = "Density") +
@@ -231,9 +256,12 @@ tumor_curve_log <- clinical_data |>
                    mean = mean_tumor_size_log, 
                    sd = sd_tumor_size_log))
 
-tumor_plot2 <- tumor_histogram_log + geom_line(
-  data = tumor_curve_log, 
-  aes(x = x, y = y), color = "red")
+tumor_plot2 <- 
+  tumor_histogram_log + 
+  geom_line(data = tumor_curve_log, 
+            aes(x = x, 
+                y = y), 
+            color = "red")
 
 
 print(tumor_plot2)
@@ -247,8 +275,12 @@ mean_sd_summary_log <- clinical_data |>
     sd_mutation_count_log = sd(mutation_count_log)
   )
 
-mutation_histogram_log <- ggplot(clinical_data, aes(x = mutation_count_log, y = ..density..)) +
-  geom_histogram(fill = "blue", color = "white", alpha = 0.9) +
+mutation_histogram_log <- ggplot(clinical_data, 
+                                 aes(x = mutation_count_log, 
+                                     y = ..density..)) +
+  geom_histogram(fill = "blue", 
+                 color = "white", 
+                 alpha = 0.9) +
   labs(title = "Distribution of Log-Transformed Mutation Counts with Fitted Normal Distribution Curve",
        x = "Log10 Transformed Mutation Counts",
        y = "Density") +
@@ -266,9 +298,12 @@ mutation_curve_log <- clinical_data |>
                    mean = mean_mutation_count_log, 
                    sd = sd_mutation_count_log))
 
-mutation_plot2 <- mutation_histogram_log + geom_line(
-  data = mutation_curve_log, 
-  aes(x = x, y = y), color = "red")
+mutation_plot2 <- 
+  mutation_histogram_log + 
+  geom_line(data = mutation_curve_log, 
+            aes(x = x, 
+                y = y), 
+            color = "red")
 
 print(mutation_plot2)
 ```
@@ -281,7 +316,10 @@ We have created box plots of positive lymph nodes based on logarithmic transform
 
 ```{r}
 
-lymph_boxplot <- ggplot(data = clinical_data, aes(y = as.factor(lymph_nodes_examined_positive), x = tumor_size_log, color = lymph_nodes_examined_positive)) +   
+lymph_boxplot <- ggplot(data = clinical_data, 
+                        aes(y = as.factor(lymph_nodes_examined_positive), 
+                            x = tumor_size_log, 
+                            color = lymph_nodes_examined_positive)) +   
   geom_boxplot(alpha = 0.5, 
                show.legend = FALSE) +
   labs(title = "The Distribution of Positive Lymph Nodes according to log-transformed Tumor Sizes",
@@ -302,7 +340,8 @@ In order to visualize the distribution of the patient survival status based on d
 ```{r}
 
 chemotherapy_chart <- clinical_data |>
-  ggplot(aes(x = factor(chemotherapy), fill = factor(overall_survival))) +
+  ggplot(aes(x = factor(chemotherapy), 
+             fill = factor(overall_survival))) +
   geom_bar(alpha = 0.5) +
   labs(title = "The Survival of Breast Cancer Patients Treated with Different Clinical Treatments",
        x = "Chemotherapy",
@@ -316,7 +355,8 @@ chemotherapy_chart <- clinical_data |>
 
 
 hormone_chart <- clinical_data |>
-  ggplot(aes(x = factor(hormone_therapy), fill = factor(overall_survival))) +
+  ggplot(aes(x = factor(hormone_therapy), 
+             fill = factor(overall_survival))) +
   geom_bar(alpha = 0.5) +
   labs(
        x = "Hormone Therapy",
@@ -331,7 +371,8 @@ hormone_chart <- clinical_data |>
 
 
 radio_chart <- clinical_data |>
-  ggplot(aes(x = factor(radio_therapy), fill = factor(overall_survival))) +
+  ggplot(aes(x = factor(radio_therapy), 
+             fill = factor(overall_survival))) +
   geom_bar(alpha = 0.5) +
   labs(
        x = "Radio Therapy",
@@ -355,9 +396,10 @@ The height of each bar represents the number of patients, and the color indicate
 p1 <- 
   clinical_data |> 
   filter(type_of_breast_surgery == 'MASTECTOMY') |>  
-  filter( death_from_cancer!='Died of Other Causes')|> 
-  ggplot(aes(x = death_from_cancer, fill = death_from_cancer)) + 
-  geom_bar() + 
+  filter(death_from_cancer!='Died of Other Causes')|> 
+  ggplot(aes(x = death_from_cancer, 
+             fill = death_from_cancer)) + 
+  geom_bar(alpha = 0.7) + 
   theme_minimal() + 
   scale_fill_manual(values = c("Died of Disease" = "red", "Living" = "green"), 
                     labels = c("Died", "Survived")) +
@@ -374,7 +416,7 @@ p2 <-
   filter(type_of_breast_surgery == 'BREAST CONSERVING') |>  
   filter(death_from_cancer!= 'NA' & death_from_cancer!='Died of Other Causes') |> 
   ggplot(aes(x = death_from_cancer, fill = death_from_cancer)) + 
-  geom_bar() + 
+  geom_bar(alpha = 0.7) + 
   theme_minimal() + 
   scale_fill_manual(values = c("Died of Disease" = "red", "Living" = "green"), 
                     labels = c("Died of Disease", "Survived")) +
@@ -390,6 +432,84 @@ p2 <-
 plot_surv_surg <- p1 +  labs(title = "Survival Efficacy Related to Different Types of Surgery") + p2 
 
 plot_surv_surg
+```
+
+## Therapeutic Efficacy Comparison
+
+```{r}
+
+#living data
+living <- clinical_data |> 
+  filter(death_from_cancer == "Living")
+n_living = nrow(living)
+
+#death for the cancer 
+death_cancer <- clinical_data |> 
+  filter(death_from_cancer == "Died of Disease")
+n_death_cancer = nrow(death_cancer)
+
+n_tot = n_living  # n_death_cancer
+
+####
+# CHEMO 
+C <- living|> filter(chemotherapy == "1")
+n_C = nrow(C)
+perc_n_C = round(n_C /n_tot * 100, 2)
+
+# RADIO
+R <- living|> filter(radio_therapy == "1")
+n_R = nrow(R)
+perc_n_R = round(n_R /n_tot * 100, 2)
+
+#HORMONE 
+H <- living|> filter(hormone_therapy == "1")
+n_H = nrow(H)
+perc_n_H = round(n_H /n_tot * 100, 2)
+
+# C + R 
+CR <- living|> filter(chemotherapy == "1" & radio_therapy == "1")
+n_CR = nrow(CR)
+perc_n_CR = round(n_CR /n_tot * 100, 2)
+
+# C + H
+CH <- living|> filter(chemotherapy == "1" & hormone_therapy == "1")
+n_CH = nrow(CH)
+perc_n_CH = round(n_CH /n_tot * 100, 2)
+
+# H + R
+RH <- living|> filter(hormone_therapy == "1" & radio_therapy == "1")
+n_RH = nrow(RH)
+perc_n_RH = round(n_RH /n_tot * 100, 2)
+
+# H + R + C 
+RHC <- living|> filter(hormone_therapy == "1" & radio_therapy == "1" & chemotherapy == "1")
+n_RHC = nrow(RHC)
+perc_n_RHC= round(n_RHC /n_tot * 100, 2)
+
+
+#Data frame with all data and plotting
+
+plot_therapeutic <- data.frame(
+  Category = c("Chemo", "Radio", "Hormone", "Chemo & Radio", "Chemo & Hormone", "Radio & Hormone", "Radio & Hormone & Chemo"),
+  Var1 = c(perc_n_C, perc_n_R, perc_n_H, perc_n_CR, perc_n_CH, perc_n_RH, perc_n_RHC)
+  ) |> 
+  ggplot(aes(x = factor(Category, 
+                        levels = Category), 
+             y = Var1,
+             fill = Category)) +
+  geom_bar(stat = "identity", 
+           position = "dodge") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, 
+                                   hjust = 1), 
+        legend.position = "none") +
+  labs(x = "Therapy", 
+       y = "%", 
+       fill = "Therapy") +
+  labs( title="Therapeutic Efficacy Comparison: A Study on Therapies Used by Individuals Alive",
+        tabs='center')
+
+plot_therapeutic
 ```
 
 # Write images
@@ -443,4 +563,9 @@ ggsave("05_surv_surg.png",
        width = 8,
        height = 5)
 
+ggsave("05_therapeutics_comp.png", 
+       path = "../doc/images/",
+       plot = plot_therapeutic,
+       width = 8,
+       height = 5)
 ```
