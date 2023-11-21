@@ -395,49 +395,49 @@ plot_surv_surg
 # Write images
 
 ```{r}
-ggsave("06_age_boxplot.png", 
+ggsave("05_age_boxplot.png", 
        path = "../doc/images/",
        plot = age_boxplot,
        width = 8,
        height = 5)
 
-ggsave("06_age_bar.png", 
+ggsave("05_age_bar.png", 
        path = "../doc/images/",
        plot = age_bar,
        width = 8,
        height = 5)
 
-ggsave("06_age_tumor_survival_boxplot.png", 
+ggsave("05_age_tumor_survival_boxplot.png", 
        path = "../doc/images/",
        plot = age_tumor_survival_boxplot,
        width = 8,
        height = 5)
 
-ggsave("06_tumor_plot1.png", 
+ggsave("05_tumor_plot1.png", 
        path = "../doc/images/",
        plot = tumor_plot1,
        width = 8,
        height = 5)
 
-ggsave("06_tumor_plot2.png", 
+ggsave("05_tumor_plot2.png", 
        path = "../doc/images/",
        plot = tumor_plot2,
        width = 8,
        height = 5)
 
-ggsave("06_surv_treatment.png", 
+ggsave("05_surv_treatment.png", 
        path = "../doc/images/",
        plot = plot_surv_treatment,
        width = 8,
        height = 5)
 
-ggsave("06_surv_treatment.png", 
+ggsave("05_surv_treatment.png", 
        path = "../doc/images/",
        plot = lymph_boxplot,
        width = 8,
        height = 5)
 
-ggsave("06_surv_surg.png", 
+ggsave("05_surv_surg.png", 
        path = "../doc/images/",
        plot = plot_surv_surg,
        width = 8,

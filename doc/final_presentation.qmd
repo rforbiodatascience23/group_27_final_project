@@ -1,0 +1,109 @@
+---
+title: "Final Presentation"
+author: "Christian, Dea, Dilan, Mikkel"
+editor: visual
+format:
+  revealjs: 
+    theme: moon
+---
+
+# Introduction
+
+Aim: Explore the clinical and genomic data from the METABRIC database of breast cancer
+
+1\. Determine which clinical variables drives death of cancer
+
+2\. Determine which genes are significant to death of cancer
+
+3\. Determine which gene mutations are most abundant in breast cancer.
+
+# Data description {.smaller .scrollable transition="slide"}
+
+::: panel-tabset
+### Data
+
+```{r}
+
+data <- read.table("../data/_raw/METABRIC.csv", header = TRUE, sep = ",")
+names(data)
+```
+
+### Missing data
+
+![](images/02_missing_data.png){width="789"}
+
+### Data clean
+
+```{r}
+
+data_clean <- read.table("../data/clinical_data_clean.tsv", header = TRUE, sep = "\t")
+names(data_clean)
+
+```
+
+### Age distribution
+
+![](images/03_age_distribution.png){width="769"}
+
+### Cancer type vs age
+
+![](images/03_cancertype_age.png){width="776"}
+:::
+
+# Survival analysis
+
+## Patient survival according to age groups
+
+![](images/06_age_bar.png)
+
+## Patient survival according to age at diagnosis
+
+![](images/06_age_boxplot.png)
+
+## Patient survival according to tumor size
+
+![](images/06_age_tumor_survival_boxplot.png)
+
+## Patient survival according to type of surgery
+
+![](images/06_surv_surg.png)
+
+# Gene expression analysis
+
+## PCA {.smaller .scrollable transition="slide"}
+
+::: panel-PCA
+### PCA variance
+
+![](images/06_PCA_variance.png){width="589"}
+
+### PCA status
+
+![](images/06_PCA_status.png){width="644"}
+
+### PCA Therapy
+
+![](images/06_PCA_therapy.png){width="645"}
+:::
+
+## Gene expression vs. death
+
+![](images/06_signif_genes.png){width="726"}
+
+# Mutation analysis
+
+## Most abundant gene mutations in breast cancer
+
+![](images/07_most_mutated.png)
+
+# Conclusion
+
+-   Age has a large impact on death
+
+-   Tumor size might be related to death
+
+-   Chemotherapy is likely used on more progressive cancer
+
+-   Gene expression drives hormone expression
+
+-   pik3ca, tp53, muc16 and ahnak2 are the most frequently mutated genes in breast cancer

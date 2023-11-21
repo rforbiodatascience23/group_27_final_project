@@ -17,4 +17,4 @@ The METABRIC database is a collaborative project between Canada and the UK, cont
 
 ## Data handle
 
-![](results/images/data_handle.png)
+![](doc/images/data_handle.png)
