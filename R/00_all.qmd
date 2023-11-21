@@ -1,6 +1,8 @@
 ---
 title: "00_doit: Running analysis"
-format: html
+format:
+  html:
+    embed-resources: true
 editor: visual
 ---
 
@@ -23,7 +25,4 @@ rmarkdown::render("05_analysis_survival.qmd", output_dir = "../results/")
 rmarkdown::render("06_analysis_gene_expression.qmd", output_dir = "../results/")
 
 rmarkdown::render("07_analysis_mutation.qmd", output_dir = "../results/")
-
-#rmarkdown::render("../doc/final_presentation.qmd", 
-#                  output_dir = "../doc/")
 ```
