@@ -467,39 +467,54 @@ n_H = nrow(H)
 perc_n_H = round(n_H /n_tot * 100, 2)
 
 # C + R 
-CR <- living|> filter(chemotherapy == "1" & radio_therapy == "1")
+CR <- living|> filter(chemotherapy == "1" &
+                        radio_therapy == "1")
 n_CR = nrow(CR)
 perc_n_CR = round(n_CR /n_tot * 100, 2)
 
 # C + H
-CH <- living|> filter(chemotherapy == "1" & hormone_therapy == "1")
+CH <- living|> filter(chemotherapy == "1" &
+                        hormone_therapy == "1")
 n_CH = nrow(CH)
 perc_n_CH = round(n_CH /n_tot * 100, 2)
 
 # H + R
-RH <- living|> filter(hormone_therapy == "1" & radio_therapy == "1")
+RH <- living|> filter(hormone_therapy == "1" &
+                        radio_therapy == "1")
 n_RH = nrow(RH)
 perc_n_RH = round(n_RH /n_tot * 100, 2)
 
 # H + R + C 
-RHC <- living|> filter(hormone_therapy == "1" & radio_therapy == "1" & chemotherapy == "1")
+RHC <- living|> filter(hormone_therapy == "1" &
+                         radio_therapy == "1" &
+                         chemotherapy == "1")
 n_RHC = nrow(RHC)
 perc_n_RHC= round(n_RHC /n_tot * 100, 2)
 
 
 #Data frame with all data and plotting
 
-plot_therapeutic <- data.frame(
-  Category = c("Chemo", "Radio", "Hormone", "Chemo & Radio", "Chemo & Hormone", "Radio & Hormone", "Radio & Hormone & Chemo"),
-  Var1 = c(perc_n_C, perc_n_R, perc_n_H, perc_n_CR, perc_n_CH, perc_n_RH, perc_n_RHC)
-  ) |> 
+plot_therapeutic <- 
+  data.frame(Category = c("Chemo", 
+               "Radio", 
+               "Hormone", 
+               "Chemo & Radio", 
+               "Chemo & Hormone", 
+               "Radio & Hormone", 
+               "Radio & Hormone & Chemo"),
+             Var1 = c(perc_n_C, 
+                      perc_n_R, 
+                      perc_n_H, 
+                      perc_n_CR, 
+                      perc_n_CH, 
+                      perc_n_RH, 
+                      perc_n_RHC)) |> 
   ggplot(aes(x = factor(Category, 
                         levels = Category), 
              y = Var1,
              fill = Category)) +
   geom_bar(stat = "identity", 
            position = "dodge") +
-  theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, 
                                    hjust = 1), 
         legend.position = "none") +
