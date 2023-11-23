@@ -118,10 +118,11 @@ We have created box plots of positive lymph nodes based on logarithmic transform
 
 ```{r}
 
-lymph_boxplot <- ggplot(data = clinical_data, 
-                        aes(y = as.factor(lymph_nodes_examined_positive), 
-                            x = tumor_size_log, 
-                            color = lymph_nodes_examined_positive)) +   
+lymph_boxplot <- 
+  clinical_data |> 
+  ggplot(aes(y = as.factor(lymph_nodes_examined_positive),
+             x = tumor_size_log, 
+             fill = factor(overall_survival))) +
   geom_boxplot(alpha = 0.5, 
                show.legend = FALSE) +
   labs(title = "The Distribution of Positive Lymph Nodes according to log-transformed Tumor Sizes",
@@ -144,7 +145,8 @@ In order to visualize the distribution of the patient survival status based on d
 chemotherapy_chart <- clinical_data |>
   ggplot(aes(x = factor(chemotherapy), 
              fill = factor(overall_survival))) +
-  geom_bar(alpha = 0.5) +
+  geom_bar(alpha = 0.5,
+           position = "dodge") +
   labs(title = "The Survival of Breast Cancer Patients Treated with Different Clinical Treatments",
        x = "Chemotherapy",
        y = "Number of Patients",
@@ -159,7 +161,8 @@ chemotherapy_chart <- clinical_data |>
 hormone_chart <- clinical_data |>
   ggplot(aes(x = factor(hormone_therapy), 
              fill = factor(overall_survival))) +
-  geom_bar(alpha = 0.5) +
+  geom_bar(alpha = 0.5,
+           position = "dodge") +
   labs(x = "Hormone Therapy",
        y = "Number of Patients",
        fill = "Survival") +
@@ -174,7 +177,8 @@ hormone_chart <- clinical_data |>
 radio_chart <- clinical_data |>
   ggplot(aes(x = factor(radio_therapy), 
              fill = factor(overall_survival))) +
-  geom_bar(alpha = 0.5) +
+  geom_bar(alpha = 0.5,
+           position = "dodge") +
   labs(x = "Radio Therapy",
        y = "Number of Patients",
        fill = "Survival") +
@@ -277,7 +281,7 @@ plot_hormone_status_boxplot
 ```{r}
 violin_plot <- 
   clinical_data |> 
-  ggplot(aes(x = neoplasm_histologic_grade, 
+  ggplot(aes(x = factor(neoplasm_histologic_grade), 
              y = tumor_size, 
              fill = factor(overall_survival))) +
   geom_violin(trim = FALSE) +

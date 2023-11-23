@@ -44,10 +44,8 @@ For the mutation analysis we would like to determine which mutation is the most 
 ```{r}
 mutations_aug <- 
   mutations |> 
-   mutate_all(~case_when(
-    . != "0" ~ 1,
-    TRUE ~ 0
-  ))
+   mutate_all(~case_when(. != "0" ~ 1,
+                         TRUE ~ 0))
 ```
 
 As we would like to determine how many mutations are in each gene, the data frame is made longer.
