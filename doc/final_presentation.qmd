@@ -66,7 +66,11 @@ names(data_clean)
 
 ## Patient survival according to type of surgery
 
-![](images/06_surv_surg.png)
+![](images/05_surv_surg.png)
+
+## Therapies used by individuals alive
+
+![](images/05_therapeutics_comp.png)
 
 # Gene expression analysis
 
@@ -98,7 +102,7 @@ names(data_clean)
 
 # Conclusion
 
--   Age has a large impact on death
+-   Age has an impact on death
 
 -   Tumor size might be related to death
 

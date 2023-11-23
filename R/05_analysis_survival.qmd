@@ -566,7 +566,7 @@ ggsave("05_surv_treatment.png",
        width = 8,
        height = 5)
 
-ggsave("05_surv_treatment.png", 
+ggsave("05_lymph_boxplot.png", 
        path = "../doc/images/",
        plot = lymph_boxplot,
        width = 8,

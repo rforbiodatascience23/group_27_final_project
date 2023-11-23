@@ -24,4 +24,6 @@ rmarkdown::render("05_analysis_survival.qmd", output_dir = "../results/")
 rmarkdown::render("06_analysis_gene_expression.qmd", output_dir = "../results/")
 
 rmarkdown::render("07_analysis_mutation.qmd", output_dir = "../results/")
+
+quarto::quarto_render(input = "../doc/final_presentation.qmd")
 ```

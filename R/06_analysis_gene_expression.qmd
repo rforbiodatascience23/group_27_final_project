@@ -92,6 +92,10 @@ PCA_Hormonetherapy <- PCA_plot +
 PCA_Radiotherapy <- PCA_plot +
   aes(color = factor(radio_therapy)) +
   labs(color = "Radio therapy")
+
+PCA_survival <- PCA_plot +
+  aes(color = factor(overall_survival)) +
+  labs(color = "Overall Survival")
 ```
 
 Using patchwork to combine the plots into two plots
@@ -102,6 +106,9 @@ plot_status
 
 plot_therapy <- PCA_Chemotherapy + PCA_Hormonetherapy / PCA_Radiotherapy
 plot_therapy
+
+PCA_survival
+
 ```
 
 ## Linear regression
@@ -252,6 +259,12 @@ ggsave("06_PCA_therapy.png",
 ggsave("06_signif_genes.png", 
        path = "../doc/images/",
        plot = plot_signif_gene,
+       width = 20,
+       height = 20)
+
+ggsave("06_PCA_survival.png", 
+       path = "../doc/images/",
+       plot = PCA_survival,
        width = 20,
        height = 20)
 ```
