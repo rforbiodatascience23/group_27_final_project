@@ -1,0 +1,51 @@
+---
+title: "07_analysis_mutation"
+format: html
+editor: visual
+---
+
+# Load data
+
+```{r}
+mutations <- read_tsv(
+  file = "../data/mutations_aug.tsv")
+```
+
+# Most mutated gene in breast cancer
+
+To determine which genes are the most mutated in breast cancer, the data will be grouped by gene, count each mutation and filter for genes with above 90 mutations.
+
+```{r}
+mutations <-
+  mutations |>
+  group_by(gene) |>
+  summarize(Mutation_count = sum(Count == 1)) |> 
+  filter(Mutation_count > 90)
+```
+
+## Plotting the most abundant gene mutations.
+
+```{r}
+mut_plot <-
+  mutations |> 
+  ggplot(aes(x = reorder(gene, -Mutation_count),
+             y = Mutation_count)) +
+  geom_bar(stat = "identity",
+           fill = "lightblue") +
+  labs(title = "Most mutated genes in breast cancer",
+       x = "Genes",
+       y = "Number of Mutations") +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1))
+mut_plot
+```
+
+# Write plots
+
+```{r}
+ggsave("07_most_mutated.png", 
+       path = "../doc/images/",
+       plot = mut_plot,
+       width = 8,
+       height = 5)
+```
