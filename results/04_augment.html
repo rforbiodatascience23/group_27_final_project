@@ -408,10 +408,8 @@ is the most abundant in breast cancer. Therefore, each mutation is
 converted to either 1 mutation and 0 no mutation.</p>
 <pre class="r"><code>mutations_aug &lt;- 
   mutations |&gt; 
-   mutate_all(~case_when(
-    . != &quot;0&quot; ~ 1,
-    TRUE ~ 0
-  ))</code></pre>
+   mutate_all(~case_when(. != &quot;0&quot; ~ 1,
+                         TRUE ~ 0))</code></pre>
 <p>As we would like to determine how many mutations are in each gene,
 the data frame is made longer.</p>
 <pre class="r"><code>mutations_aug_long &lt;- 
@@ -422,12 +420,29 @@ the data frame is made longer.</p>
     values_to = &quot;Count&quot;
   )</code></pre>
 </div>
+<div id="clinical-data-augmentation" class="section level1">
+<h1>Clinical data augmentation</h1>
+<p>Age group</p>
+<pre class="r"><code>clinical_data &lt;- 
+  clinical_data |&gt;
+  mutate(age_group = cut(age_at_diagnosis,
+                         breaks = c(0, 40, 60, 80, Inf),
+                         labels = c(&quot;0-40&quot;, &quot;41-60&quot;, &quot;61-80&quot;, &quot;81+&quot;)))</code></pre>
+<p>Log transformed tumor_size and mutation count</p>
+<pre class="r"><code>clinical_data &lt;- clinical_data |&gt;   
+  mutate(     
+    tumor_size_log = log10(tumor_size),     
+    mutation_count_log = log10(mutation_count)   
+    )</code></pre>
+</div>
 <div id="write-data" class="section level1">
 <h1>Write data</h1>
 <pre class="r"><code>write_tsv(x = gene_expression_aug_long, 
           file = &quot;../data/gene_expression_aug.tsv&quot;)
 write_tsv(x = mutations_aug_long, 
-          file = &quot;../data/mutations_aug.tsv&quot;)</code></pre>
+          file = &quot;../data/mutations_aug.tsv&quot;)
+write_tsv(x = clinical_data, 
+          file = &quot;../data/clinical_data_aug.tsv&quot;)</code></pre>
 </div>
 
 
