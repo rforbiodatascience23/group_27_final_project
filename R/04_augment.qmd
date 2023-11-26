@@ -20,9 +20,10 @@ mutations <- read_tsv(
 Adding over_all survival to the gene_expression data frame
 
 ```{r}
-gene_expression_aug <- bind_cols(gene_expression, 
-                             clinical_data |> 
-                               select(overall_survival))
+gene_expression_aug <- 
+  bind_cols(gene_expression, 
+            clinical_data |> 
+              select(overall_survival))
 ```
 
 As we would like to apply linear regression models to each gene in the data set, we would like to make it longer.
@@ -44,8 +45,10 @@ For the mutation analysis we would like to determine which mutation is the most 
 ```{r}
 mutations_aug <- 
   mutations |> 
-   mutate_all(~case_when(. != "0" ~ 1,
-                         TRUE ~ 0))
+   mutate_all(
+     ~case_when(. != "0" ~ 1,
+                         TRUE ~ 0)
+     )
 ```
 
 As we would like to determine how many mutations are in each gene, the data frame is made longer.
@@ -67,15 +70,18 @@ Age group
 ```{r}
 clinical_data <- 
   clinical_data |>
-  mutate(age_group = cut(age_at_diagnosis,
+  mutate(
+    age_group = cut(age_at_diagnosis,
                          breaks = c(0, 40, 60, 80, Inf),
-                         labels = c("0-40", "41-60", "61-80", "81+")))
+                         labels = c("0-40", "41-60", "61-80", "81+"))
+    )
 ```
 
 Log transformed tumor_size and mutation count
 
 ```{r}
-clinical_data <- clinical_data |>   
+clinical_data <- 
+  clinical_data |>   
   mutate(     
     tumor_size_log = log10(tumor_size),     
     mutation_count_log = log10(mutation_count)   
