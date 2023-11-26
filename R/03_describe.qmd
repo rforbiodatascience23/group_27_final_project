@@ -10,7 +10,8 @@ editor: visual
 
 ```{r}
 clinical_data <- read_tsv(
-  file = "../data/clinical_data_clean.tsv", na = 'NA')
+  file = "../data/clinical_data_clean.tsv",
+  na = 'NA')
 ```
 
 # Clinical data overview
