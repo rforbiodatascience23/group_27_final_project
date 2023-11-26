@@ -23,7 +23,6 @@ To access the data go to [DATA](https://www.kaggle.com/datasets/raghadalharbi/br
 
 ```{r}
 data <- read_csv(file = "../data/_raw/METABRIC.csv")
-head(data)
 ```
 
 # Split data
