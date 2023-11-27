@@ -7,15 +7,11 @@ format:
     theme: moon
 ---
 
-# Introduction
+# Introduction and data handling
 
-Aim: Explore the clinical and genomic data from the METABRIC database of breast cancer
+Aim: Explore the clinical and genomic data from the METABRIC database of breast cancer, and determine which variables and genes drives overall survival of cancer.
 
-1\. Determine which clinical variables drives death of cancer
-
-2\. Determine which genes are significant to death of cancer
-
-3\. Determine which gene mutations are most abundant in breast cancer.
+![](images/data_handle.png){width="506"}
 
 # Data description {.smaller .scrollable transition="slide"}
 
@@ -72,10 +68,6 @@ names(data_clean)
 
 ![](images/05_violin_plot.png)
 
-## Patient survival according to type of surgery
-
-![](images/05_surv_surg.png)
-
 ## Therapies used by individuals alive
 
 ![](images/05_therapeutics_comp.png)
@@ -88,6 +80,10 @@ names(data_clean)
 ### PCA variance
 
 ![](images/06_PCA_variance.png){width="589"}
+
+### PCA Overall_survival
+
+![](images/06_PCA_survival.png)
 
 ### PCA status
 
@@ -108,14 +104,18 @@ names(data_clean)
 
 ![](images/07_most_mutated.png)
 
-# Conclusion
+# Conclusion/Further work
 
 -   Age has an impact on death
 
--   Tumor size might be related to death
+-   Tumor size might be related to death but needs statistical significance test
 
--   Chemotherapy is likely used on more progressive cancer
+-   The more positive lymph nodes, the more likely to not survive
 
--   Gene expression drives hormone expression
+-   Shorter expected survival time with a neoplasm histological grade of 3
+
+-   Radio - and hormone therapy is the most frequently used therapy amongst patient who survived.
+
+-   PCA and gene expression need a further investigation
 
 -   pik3ca, tp53, muc16 and ahnak2 are the most frequently mutated genes in breast cancer
