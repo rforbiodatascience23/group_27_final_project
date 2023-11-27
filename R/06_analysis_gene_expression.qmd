@@ -70,7 +70,6 @@ PCA_plot <-
   geom_point(size = 0.5) +
   labs(x = "Principal Component 1",
        y = "Principal Component 2") +
-  theme_minimal() +
   theme(legend.position="right")
 ```
 
@@ -138,7 +137,6 @@ gene_expression_aug <-
   nest() |> 
   ungroup()
 ```
-
 
 ### Fitting models
 
