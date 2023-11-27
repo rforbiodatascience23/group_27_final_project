@@ -265,6 +265,6 @@ ggsave("06_signif_genes.png",
 ggsave("06_PCA_survival.png", 
        path = "../doc/images/",
        plot = PCA_survival,
-       width = 20,
-       height = 20)
+       width = 8,
+       height = 5)
 ```

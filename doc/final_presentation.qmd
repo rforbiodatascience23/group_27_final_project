@@ -54,15 +54,23 @@ names(data_clean)
 
 ## Patient survival according to age groups
 
-![](images/06_age_bar.png)
-
-## Patient survival according to age at diagnosis
-
-![](images/06_age_boxplot.png)
+![](images/05_age_bar.png)
 
 ## Patient survival according to tumor size
 
 ![](images/06_age_tumor_survival_boxplot.png)
+
+## Hormone status vs. patient survival
+
+![](images/05_hormone_status_boxplot.png)
+
+## Lymph Node and tumor size vs. survival
+
+![](images/05_lymph_boxplot.png)
+
+## Neoplasm and tumor size vs. patient survival
+
+![](images/05_violin_plot.png)
 
 ## Patient survival according to type of surgery
 
