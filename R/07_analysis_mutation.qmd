@@ -7,7 +7,8 @@ editor: visual
 # Load data
 
 ```{r}
-mutations <- read_tsv(
+mutations <-
+  read_tsv(
   file = "../data/mutations_aug.tsv")
 ```
 
@@ -28,7 +29,8 @@ mutations <-
 ```{r}
 mut_plot <-
   mutations |> 
-  ggplot(aes(x = reorder(gene, -Mutation_count),
+  ggplot(aes(x = reorder(gene,
+                         -Mutation_count),
              y = Mutation_count)) +
   geom_bar(stat = "identity",
            fill = "lightblue") +

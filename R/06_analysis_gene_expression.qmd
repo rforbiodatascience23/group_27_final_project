@@ -7,13 +7,16 @@ editor: visual
 # Load data
 
 ```{r}
-clinical_data <- read_tsv(
+clinical_data <-
+  read_tsv(
   file = "../data/clinical_data_clean.tsv")
 
-gene_expression <- read_tsv(
+gene_expression <-
+  read_tsv(
   file = "../data/gene_expression.tsv")
 
-gene_expression_aug <- read_tsv(
+gene_expression_aug <-
+  read_tsv(
   file = "../data/gene_expression_aug.tsv")
 
 ```
@@ -40,7 +43,8 @@ pca_fit <-
 Utilizing the tidy function to extract the eigenvalues from each PC component, slicing the 10 first rows as these are the only interesting, and plotting each component and variance explained as a bar chart.
 
 ```{r}
-plot_variance <- pca_fit |> 
+plot_variance <- 
+  pca_fit |> 
   tidy(matrix = "eigenvalues") |> 
   slice(1:10) |> 
   ggplot(aes(PC, 
@@ -58,7 +62,8 @@ plot_variance
 Using augment function to add the clinical data variables to the existing data frame, and plotting the first and second component.
 
 ```{r}
-PCA_plot <- pca_fit |> 
+PCA_plot <- 
+  pca_fit |> 
   augment(clinical_data) |> 
   ggplot(aes(.fittedPC1, 
              .fittedPC2)) + 
@@ -72,28 +77,35 @@ PCA_plot <- pca_fit |>
 Coloring the PCA according to clinical data
 
 ```{r}
-PCA_er_status <- PCA_plot +
+PCA_er_status <- 
+  PCA_plot +
   aes(color = er_status)
 
-PCA_her2_status <- PCA_plot +
+PCA_her2_status <- 
+  PCA_plot +
   aes(color = her2_status)
 
-PCA_pr_status <- PCA_plot +
+PCA_pr_status <-
+  PCA_plot +
   aes(color = pr_status)
 
-PCA_Chemotherapy <- PCA_plot +
+PCA_Chemotherapy <- 
+  PCA_plot +
   aes(color = factor(chemotherapy)) +
   labs(color = "Chemotherapy")
 
-PCA_Hormonetherapy <- PCA_plot +
+PCA_Hormonetherapy <- 
+  PCA_plot +
   aes(color = factor(hormone_therapy)) +
   labs(color = "Hormone therapy")
 
-PCA_Radiotherapy <- PCA_plot +
+PCA_Radiotherapy <- 
+  PCA_plot +
   aes(color = factor(radio_therapy)) +
   labs(color = "Radio therapy")
 
-PCA_survival <- PCA_plot +
+PCA_survival <- 
+  PCA_plot +
   aes(color = factor(overall_survival)) +
   labs(color = "Overall Survival")
 ```
@@ -101,10 +113,12 @@ PCA_survival <- PCA_plot +
 Using patchwork to combine the plots into two plots
 
 ```{r}
-plot_status <- PCA_er_status + PCA_her2_status / PCA_pr_status
+plot_status <- 
+  PCA_er_status + PCA_her2_status / PCA_pr_status
 plot_status
 
-plot_therapy <- PCA_Chemotherapy + PCA_Hormonetherapy / PCA_Radiotherapy
+plot_therapy <-
+  PCA_Chemotherapy + PCA_Hormonetherapy / PCA_Radiotherapy
 plot_therapy
 
 PCA_survival
@@ -125,10 +139,6 @@ gene_expression_aug <-
   ungroup()
 ```
 
-```{r}
-gene_expression_aug |> 
-  sample_n(10)
-```
 
 ### Fitting models
 
