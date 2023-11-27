@@ -84,14 +84,6 @@ names(data_clean)
 ### PCA Overall_survival
 
 ![](images/06_PCA_survival.png)
-
-### PCA status
-
-![](images/06_PCA_status.png){width="644"}
-
-### PCA Therapy
-
-![](images/06_PCA_therapy.png){width="645"}
 :::
 
 ## Gene expression vs. death
@@ -104,18 +96,12 @@ names(data_clean)
 
 ![](images/07_most_mutated.png)
 
-# Conclusion/Further work
+# Further work
 
--   Age has an impact on death
+-   Find correlation of clinical variables vs. overall_survival
 
--   Tumor size might be related to death but needs statistical significance test
+-   Clean data according to the findings
 
--   The more positive lymph nodes, the more likely to not survive
+-   Do proper statistical test to determine if the findings are significant.
 
--   Shorter expected survival time with a neoplasm histological grade of 3
-
--   Radio - and hormone therapy is the most frequently used therapy amongst patient who survived.
-
--   PCA and gene expression need a further investigation
-
--   pik3ca, tp53, muc16 and ahnak2 are the most frequently mutated genes in breast cancer
+-   Analysis seems random at this stage.
