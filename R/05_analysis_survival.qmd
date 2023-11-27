@@ -315,13 +315,12 @@ plot_hormone_status_boxplot
 violin_plot <- 
   clinical_data |> 
   ggplot(aes(x = factor(neoplasm_histologic_grade), 
-             y = tumor_size, 
+             y = overall_survival_months, 
              fill = factor(overall_survival))) +
-  geom_violin(trim = FALSE) +
   geom_boxplot(trim = FALSE) +
   labs(title = "Neoplasm Histologic Grade and Overall Survival",
        x = "Neoplasm Histologic Grade",
-       y = "Tumor Size",
+       y = "Overall survival months",
        fill = "Overall survival") +
   theme_classic(base_size = 10,
                 base_family = "Avenir")
@@ -402,133 +401,16 @@ plot_therapeutic <-
        y = "%",
        fill = "Therapy") +
   labs(title = "Therapeutic Efficacy Comparison: 
-       A Study on Therapies Used by Individuals Alive")
-
-plot_therapeutic
-
-```
-
-```{r}
-
-#living data
-living <- 
-  clinical_data |> 
-  filter(death_from_cancer == "Living")
-n_living = nrow(living)
-
-#death for the cancer 
-death_cancer <-
-  clinical_data |> 
-  filter(death_from_cancer == "Died of Disease")
-n_death_cancer = nrow(death_cancer)
-
-n_tot = n_living # n_death_cancer
-
-####
-# CHEMO 
-C <- 
-  living|> 
-  filter(
-    chemotherapy == "1" & 
-                          radio_therapy == "0" & hormone_therapy == "0"
-    )
-n_C = nrow(C)
-perc_n_C = round(n_C /n_tot * 100, 2)
-
-# RADIO
-R <- 
-  living|> 
-  filter(
-    radio_therapy == "1" & 
-                           chemotherapy == "0" & hormone_therapy == "0"
-    )
-n_R = nrow(R)
-perc_n_R = round(n_R /n_tot * 100, 2)
-
-#HORMONE 
-H <-
-  living|> 
-  filter(
-    hormone_therapy == "1" & 
-                            chemotherapy == "0" & radio_therapy == "0"
-    )
-n_H = nrow(H)
-perc_n_H = round(n_H /n_tot * 100, 2)
-
-# C + R 
-CR <- 
-  living|> 
-  filter(
-    chemotherapy == "1" &  radio_therapy == "1" &
-                                                  hormone_therapy == "0" 
-    )
-n_CR = nrow(CR)
-perc_n_CR = round(n_CR /n_tot * 100, 2)
-
-# C + H
-CH <- 
-  living|> 
-  filter(
-    chemotherapy == "1" & hormone_therapy == "1" &
-                                                  radio_therapy == "0"
-    )
-n_CH = nrow(CH)
-perc_n_CH = round(n_CH /n_tot * 100, 2)
-
-# H + R
-RH <- 
-  living|> 
-  filter(
-    hormone_therapy == "1" &
-                        radio_therapy == "1"
-    )
-n_RH = nrow(RH)
-perc_n_RH = round(n_RH /n_tot * 100, 2)
-
-# H + R + C 
-RHC <- 
-  living|> 
-  filter(
-    hormone_therapy == "1" &
-                         radio_therapy == "1" &
-                                                chemotherapy == "1"
-    )
-n_RHC = nrow(RHC)
-perc_n_RHC= round(n_RHC /n_tot * 100, 2)
-
-
-#Data frame with all data and plotting
-
-plot_therapeutic <- 
-  data.frame(Category = c("Chemo", 
-               "Radio", 
-               "Hormone", 
-               "Chemo & Radio", 
-               "Chemo & Hormone", 
-               "Radio & Hormone", 
-               "Radio & Hormone & Chemo"),
-             Var1 = c(perc_n_C, 
-                      perc_n_R, 
-                      perc_n_H, 
-                      perc_n_CR, 
-                      perc_n_CH, 
-                      perc_n_RH, 
-                      perc_n_RHC)) |> 
-  ggplot(aes(x = factor(Category, 
-                        levels = Category), 
-             y = Var1,
-             fill = Category)) +
-  geom_bar(stat = "identity", 
-           position = "dodge") +
-  theme(axis.text.x = element_text(angle = 45, 
-                                   hjust = 1), 
-        legend.position = "none") +
-  labs(x = "Therapy", 
-       y = "%", 
-       fill = "Therapy") +
-  labs( title="Therapeutic Efficacy Comparison: 
-        A Study on Therapies Used by Individuals Alive",
-        tabs='center')
+       A Study on Therapies Used by Individuals Alive") +
+  scale_x_discrete(labels = c(
+    perc_n_C = "Chemo",
+    perc_n_R = "Radio",
+    perc_n_H = "Hormone",
+    perc_n_CR = "Chemo + Radio",
+    perc_n_CH = "Chemo + Hormone",
+    perc_n_RH = "Radio + Hormone",
+    perc_n_RHC = "Chemo + Radio + Hormone"
+  ))
 
 plot_therapeutic
 ```
