@@ -261,8 +261,7 @@ p2 <-
                                     face = "bold"), 
         axis.text.x = element_text(size = 10), 
         axis.text.y = element_blank()) + 
-  labs(y=NULL)+ 
-  guides(fill = guide_legend(title = NULL)) 
+  labs(y=NULL)
 
 
 plot_surv_surg <- p1 +
