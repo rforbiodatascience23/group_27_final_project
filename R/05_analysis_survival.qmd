@@ -342,17 +342,29 @@ death_cancer <- clinical_data |>
   filter(death_from_cancer == "Died of Disease")
 n_death_cancer = nrow(death_cancer)
 
-n_tot = n_living + n_death_cancer
+n_tot = n_living # + n_death_cancer
 
 therapy <- 
   living |> 
   summarise(
-    n_C = sum(chemotherapy == "1"),
-    n_R = sum(radio_therapy == "1"),
-    n_H = sum(hormone_therapy == "1"),
-    n_CR = sum(chemotherapy == "1" & radio_therapy == "1"),
-    n_CH = sum(chemotherapy == "1" & hormone_therapy == "1"),
-    n_RH = sum(radio_therapy == "1" & hormone_therapy == "1"),
+    n_C = sum(chemotherapy == "1" & 
+                radio_therapy == "0" & hormone_therapy == "0" ),
+    
+    n_R = sum(radio_therapy == "1" & 
+                chemotherapy == "0" & hormone_therapy == "0"),
+    
+    n_H = sum(hormone_therapy == "1" & 
+                chemotherapy == "0" & radio_therapy == "0" ),
+    
+    n_CR = sum(chemotherapy == "1" & radio_therapy == "1" & 
+                 hormone_therapy == "0" ),
+    
+    n_CH = sum(chemotherapy == "1" & hormone_therapy == "1" & 
+                 radio_therapy == "0"),
+    
+    n_RH = sum(radio_therapy == "1" & hormone_therapy == "1" & 
+                 chemotherapy == "0" ),
+    
     n_RHC = sum(chemotherapy == "1" & radio_therapy == "1" & hormone_therapy == "1")
   ) |> 
   mutate(
@@ -389,16 +401,12 @@ plot_therapeutic <-
   labs(x = "Therapy",
        y = "%",
        fill = "Therapy") +
-  labs(title = "Therapeutic Efficacy Comparison: A Study on Therapies Used by Individuals Alive")
+  labs(title = "Therapeutic Efficacy Comparison: 
+       A Study on Therapies Used by Individuals Alive")
 
 plot_therapeutic
 
 ```
-
-
-
-
-
 
 ```{r}
 
@@ -421,7 +429,8 @@ n_tot = n_living # n_death_cancer
 C <- 
   living|> 
   filter(
-    chemotherapy == "1"
+    chemotherapy == "1" & 
+                          radio_therapy == "0" & hormone_therapy == "0"
     )
 n_C = nrow(C)
 perc_n_C = round(n_C /n_tot * 100, 2)
@@ -430,7 +439,8 @@ perc_n_C = round(n_C /n_tot * 100, 2)
 R <- 
   living|> 
   filter(
-    radio_therapy == "1"
+    radio_therapy == "1" & 
+                           chemotherapy == "0" & hormone_therapy == "0"
     )
 n_R = nrow(R)
 perc_n_R = round(n_R /n_tot * 100, 2)
@@ -439,7 +449,8 @@ perc_n_R = round(n_R /n_tot * 100, 2)
 H <-
   living|> 
   filter(
-    hormone_therapy == "1"
+    hormone_therapy == "1" & 
+                            chemotherapy == "0" & radio_therapy == "0"
     )
 n_H = nrow(H)
 perc_n_H = round(n_H /n_tot * 100, 2)
@@ -448,8 +459,8 @@ perc_n_H = round(n_H /n_tot * 100, 2)
 CR <- 
   living|> 
   filter(
-    chemotherapy == "1" &
-                        radio_therapy == "1"
+    chemotherapy == "1" &  radio_therapy == "1" &
+                                                  hormone_therapy == "0" 
     )
 n_CR = nrow(CR)
 perc_n_CR = round(n_CR /n_tot * 100, 2)
@@ -458,8 +469,8 @@ perc_n_CR = round(n_CR /n_tot * 100, 2)
 CH <- 
   living|> 
   filter(
-    chemotherapy == "1" &
-                        hormone_therapy == "1"
+    chemotherapy == "1" & hormone_therapy == "1" &
+                                                  radio_therapy == "0"
     )
 n_CH = nrow(CH)
 perc_n_CH = round(n_CH /n_tot * 100, 2)
@@ -480,7 +491,7 @@ RHC <-
   filter(
     hormone_therapy == "1" &
                          radio_therapy == "1" &
-                         chemotherapy == "1"
+                                                chemotherapy == "1"
     )
 n_RHC = nrow(RHC)
 perc_n_RHC= round(n_RHC /n_tot * 100, 2)
@@ -515,7 +526,8 @@ plot_therapeutic <-
   labs(x = "Therapy", 
        y = "%", 
        fill = "Therapy") +
-  labs( title="Therapeutic Efficacy Comparison: A Study on Therapies Used by Individuals Alive",
+  labs( title="Therapeutic Efficacy Comparison: 
+        A Study on Therapies Used by Individuals Alive",
         tabs='center')
 
 plot_therapeutic
