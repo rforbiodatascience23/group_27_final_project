@@ -388,9 +388,10 @@ display: none;
 <div id="expression-augmentation" class="section level1">
 <h1>Expression augmentation</h1>
 <p>Adding over_all survival to the gene_expression data frame</p>
-<pre class="r"><code>gene_expression_aug &lt;- bind_cols(gene_expression, 
-                             clinical_data |&gt; 
-                               select(overall_survival))</code></pre>
+<pre class="r"><code>gene_expression_aug &lt;- 
+  bind_cols(gene_expression, 
+            clinical_data |&gt; 
+              select(overall_survival))</code></pre>
 <p>As we would like to apply linear regression models to each gene in
 the data set, we would like to make it longer.</p>
 <pre class="r"><code>gene_expression_aug_long &lt;- 
@@ -408,8 +409,10 @@ is the most abundant in breast cancer. Therefore, each mutation is
 converted to either 1 mutation and 0 no mutation.</p>
 <pre class="r"><code>mutations_aug &lt;- 
   mutations |&gt; 
-   mutate_all(~case_when(. != &quot;0&quot; ~ 1,
-                         TRUE ~ 0))</code></pre>
+   mutate_all(
+     ~case_when(. != &quot;0&quot; ~ 1,
+                         TRUE ~ 0)
+     )</code></pre>
 <p>As we would like to determine how many mutations are in each gene,
 the data frame is made longer.</p>
 <pre class="r"><code>mutations_aug_long &lt;- 
@@ -425,11 +428,14 @@ the data frame is made longer.</p>
 <p>Age group</p>
 <pre class="r"><code>clinical_data &lt;- 
   clinical_data |&gt;
-  mutate(age_group = cut(age_at_diagnosis,
+  mutate(
+    age_group = cut(age_at_diagnosis,
                          breaks = c(0, 40, 60, 80, Inf),
-                         labels = c(&quot;0-40&quot;, &quot;41-60&quot;, &quot;61-80&quot;, &quot;81+&quot;)))</code></pre>
+                         labels = c(&quot;0-40&quot;, &quot;41-60&quot;, &quot;61-80&quot;, &quot;81+&quot;))
+    )</code></pre>
 <p>Log transformed tumor_size and mutation count</p>
-<pre class="r"><code>clinical_data &lt;- clinical_data |&gt;   
+<pre class="r"><code>clinical_data &lt;- 
+  clinical_data |&gt;   
   mutate(     
     tumor_size_log = log10(tumor_size),     
     mutation_count_log = log10(mutation_count)   

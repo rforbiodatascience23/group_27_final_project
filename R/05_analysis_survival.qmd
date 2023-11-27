@@ -37,7 +37,7 @@ print(survival_rate)
 
 ```
 
-A survival rate of 0.43 means that, on average 44% of the individuals in the data set have survived the breast cancer.
+A survival rate of 0.43 means that, on average 43% of the individuals in the data set have survived the breast cancer.
 
 ## Age Distribution
 
@@ -132,13 +132,14 @@ lymph_boxplot <-
   ggplot(aes(y = as.factor(lymph_nodes_examined_positive),
              x = tumor_size_log, 
              fill = factor(overall_survival))) +
-  geom_boxplot(alpha = 0.5, 
-               show.legend = FALSE) +
+  geom_boxplot(alpha = 0.5) +
   labs(title = "The Distribution of Positive Lymph Nodes according to log-transformed Tumor Sizes",
        x = "Log10 Transformed Tumor Size", 
-       y = "Positive Lymph Nodes") +
+       y = "Positive Lymph Nodes",
+       fill = "Overall Survival") +
   theme_classic(base_size = 9,
-                base_family = "Avenir")
+                base_family = "Avenir") +
+  theme(legend.position = "bottom")
 
 lymph_boxplot
 ```
@@ -317,7 +318,7 @@ violin_plot <-
   ggplot(aes(x = factor(neoplasm_histologic_grade), 
              y = overall_survival_months, 
              fill = factor(overall_survival))) +
-  geom_boxplot(trim = FALSE) +
+  geom_boxplot() +
   labs(title = "Neoplasm Histologic Grade and Overall Survival",
        x = "Neoplasm Histologic Grade",
        y = "Overall survival months",
